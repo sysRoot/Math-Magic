@@ -1,5 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import './CollatzItem.sass'
 
 const CollatzItem = props => {
   return (
@@ -16,11 +17,11 @@ const CollatzItem = props => {
       })}
       <div>
         {props.held ? (
-          <button onClick={props.holder} data-key={props.id}>
+          <button className="button-hold" onClick={props.holder} data-key={props.id}>
             <FontAwesomeIcon icon="hand-point-left" />
           </button>
         ) : (
-          <button onClick={props.holder} data-key={props.id}>
+          <button className="button-destroy" onClick={props.holder} data-key={props.id}>
             <FontAwesomeIcon icon="radiation" />
           </button>
         )}
