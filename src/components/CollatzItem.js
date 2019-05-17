@@ -4,7 +4,8 @@ import './CollatzItem.sass'
 
 const CollatzItem = props => {
   return (
-    <div key={props.id}>
+    <div className="arr-item" key={props.id}>
+      <div className="arr-block">
       {props.arrItem.map((cur, idx, self) => {
         return (
           <div key={`${props.id}-${idx}`}>
@@ -15,7 +16,8 @@ const CollatzItem = props => {
           </div>
         );
       })}
-      <div>
+      </div>
+      <div className="btn-container">
         {props.held ? (
           <button className="button-hold" onClick={props.holder} data-key={props.id}>
             <FontAwesomeIcon icon="hand-point-left" />
