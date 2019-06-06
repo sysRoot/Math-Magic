@@ -7,7 +7,9 @@ import {
   faRadiation,
   faHandPointLeft
 } from "@fortawesome/free-solid-svg-icons";
-import Collatzer from "./components/Collatzer";
+import Collatzer from "./components/Collatz/Collatzer";
+import Iterator from "./components/Iterator/Iterator";
+import { Route, NavLink, Link } from "react-router-dom";
 library.add(faMinus, faPlus, faRadiation, faHandPointLeft);
 
 class App extends Component {
@@ -19,7 +21,11 @@ class App extends Component {
       addVal: 1,
       mergedVal: `3n+1`,
       collatzArr: [],
-      heldArrs: []
+      heldArrs: [],
+      iterArr: [],
+      iterVal: 1,
+      startVal: 1,
+      upOrDown: false
     };
   }
   up = () => {
@@ -44,10 +50,13 @@ class App extends Component {
     event.preventDefault();
     this.setState({ [event.target.name]: Number(event.target.value) });
   };
+  changeRadioHandler = event => {
+    this.setState({ upOrDown: event.target.value });
+  };
   collatzFunc = event => {
     event.preventDefault();
-    const heldArray = [...this.state.collatzArr].filter(cur => cur.held)
-    this.setState({collatzArr: heldArray});
+    const heldArray = [...this.state.collatzArr].filter(cur => cur.held);
+    this.setState({ collatzArr: heldArray });
 
     let resultA = [];
     let initA = [this.state.integer];
@@ -77,7 +86,7 @@ class App extends Component {
 
     const target = toggledArray.find((cur, index) => {
       position = index;
-      let found
+      let found;
       console.log(
         cur,
         Number.parseFloat(event.target.getAttribute("data-key"), 10),
@@ -100,9 +109,9 @@ class App extends Component {
             10
           )
       ) {
-        return found = cur.id;
+        return (found = cur.id);
       }
-      return found
+      return found;
     });
 
     target.held === false ? (target.held = true) : (target.held = false);
@@ -111,20 +120,62 @@ class App extends Component {
 
     this.setState({ collatzArr: toggledArray });
   };
+  iteratorFunc = event => {
+    event.preventDefault();
+    let iteratedArr = [];
+    let start = this.state.startVal;
+    if (this.state.upOrDown === "increase") {
+      do {
+        start += this.state.iterVal;
+        iteratedArr.push(start);
+      } while (iteratedArr.length < 1000);
+    } else if (this.state.upOrDown === "decrease") {
+      do {
+        start -= this.state.iterVal;
+        iteratedArr.push(start);
+      } while (iteratedArr[iteratedArr.length - 1] > 0);
+    }
+    return this.setState({
+      iterArr: [...iteratedArr]
+    });
+  };
   render() {
     return (
       <div className="App">
-        <Collatzer
-          mergedVal={this.state.mergedVal}
-          collatzUp={this.up}
-          collatzDown={this.down}
-          changer={this.changeHandler}
-          integer={this.state.integer}
-          multi={this.state.multiVal}
-          add={this.state.addVal}
-          collatz={this.collatzFunc}
-          result={this.state.collatzArr}
-          holder={this.holdHandler}
+        <Route
+          path="/collatz"
+          exact
+          render={props => (
+            <Collatzer
+              {...this.props}
+              mergedVal={this.state.mergedVal}
+              collatzUp={this.up}
+              collatzDown={this.down}
+              changer={this.changeHandler}
+              integer={this.state.integer}
+              multi={this.state.multiVal}
+              add={this.state.addVal}
+              collatz={this.collatzFunc}
+              result={this.state.collatzArr}
+              holder={this.holdHandler}
+            />
+          )}
+        />
+        <Route
+          path="/iterator"
+          exact
+          render={props => (
+            <Iterator
+              {...this.props}
+              iterate={this.iteratorFunc}
+              changer={this.changeHandler}
+              changeRadio={this.changeRadioHandler}
+              startVal={this.state.startVal}
+              iterArr={this.state.iterArr}
+              iterVal={this.state.iterVal}
+              upOrDown={this.state.upOrDown}
+            />
+          )}
         />
       </div>
     );
